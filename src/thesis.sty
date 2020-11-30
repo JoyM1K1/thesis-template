@@ -1,0 +1,170 @@
+% 変数定義
+\makeatletter
+
+% 変数読み込み
+\def\jprogram#1{\gdef\@jprogram{#1}}
+\def\jcourse#1{\gdef\@jcourse{#1}}
+\def\jtitle#1{\gdef\@jtitle{#1}}
+\def\jauthor#1{\gdef\@jauthor{#1}}
+\def\jmajor#1{\gdef\@jmajor{#1}}
+\def\jdate#1{\gdef\@jdate{#1}}
+\def\jsupervisor#1{\gdef\@jsupervisor{#1}}
+
+\def\eprogram#1{\gdef\@eprogram{#1}}
+\def\ecourse#1{\gdef\@ecourse{#1}}
+\def\etitle#1{\gdef\@etitle{#1}}
+\def\eauthor#1{\gdef\@eauthor{#1}}
+\def\emajor#1{\gdef\@emajor{#1}}
+\def\edate#1{\gdef\@edate{#1}}
+\def\esupervisor#1{\gdef\@esupervisor{#1}}
+
+%行間設定
+\renewcommand{\baselinestretch}{1.1}
+\setlength{\parskip}{.2\baselineskip}
+
+% 余白設定（左右対称）
+\setlength{\textwidth}{15.92cm}
+\setlength{\oddsidemargin}{0mm}
+\setlength{\evensidemargin}{0mm}
+\setlength{\topmargin}{-1cm}
+\setlength{\textheight}{23.5cm}
+\setlength{\footskip}{18mm}
+
+% 余白設定（左綴じ用）
+\newcommand{\bindermode}{%
+\setlength{\textwidth}{15cm}
+\setlength{\oddsidemargin}{13mm}
+\setlength{\evensidemargin}{0mm}
+\setlength{\topmargin}{-1cm}
+\setlength{\textheight}{23.5cm}
+\setlength{\footskip}{18mm}
+}
+
+
+% 表紙用行間広め定義
+\newenvironment{lineskiptitle}{%
+\baselineskip = 1.5cm
+}
+
+% 表紙の定義（日本語）
+\def\jmaketitle{\par
+\begingroup
+\@jmaketitle
+\endgroup
+}
+\def\@jmaketitle{%
+\thispagestyle{empty}
+\begin{center}
+  {\Large \@jprogram }
+  \vspace{0.5cm}\par
+  {\Large \@jcourse }
+  \vfill
+  \begin{lineskiptitle}
+  {\LARGE \@jtitle}
+  \end{lineskiptitle}
+  \vfill
+  {\Large \@jauthor \\ \@jmajor }
+  \vspace{2cm}\par
+  {\Large \@jdate}
+\end{center}
+\cleardoublepage
+\thispagestyle{empty}
+\begin{center}
+  {\Large \@jprogram }
+  \vspace{0.5cm}\par
+  {\Large \@jcourse }
+  \vfill
+  \begin{lineskiptitle}
+    {\LARGE \@jtitle}
+  \end{lineskiptitle}
+  \vfill
+  {\Large \@jauthor \\ \@jmajor }
+  \vspace{2cm}\par
+  {\Large 指導教員 \ \ \@jsupervisor \ \ 印}
+\end{center}
+\pagenumbering{roman}
+}
+
+% 表紙の定義（英語）
+\def\emaketitle{\par
+\begingroup
+\@emaketitle
+\endgroup
+}
+\def\@emaketitle{%
+\thispagestyle{empty}
+\begin{center}
+  \vfill
+  \begin{lineskiptitle}
+      \fbox{\LARGE \@etitle}
+  \end{lineskiptitle}
+  \vspace{2cm}\par
+  {\Large \@eauthor \\ \@eprogram}
+  \vfill
+  {\LARGE \@ecourse}
+  \vspace{2cm}\par
+  {\Large \@edate}
+\end{center}
+\cleardoublepage
+\thispagestyle{empty}
+\begin{center}
+  \vfill
+  \begin{lineskiptitle}
+    \fbox{\LARGE \@etitle}
+  \end{lineskiptitle}
+  \vspace{2cm}\par
+  {\Large \@eauthor \\ \@eprogram}
+  \vspace{0.5cm}\par
+  {\Large Advised by \@esupervisor \\ Signature \underline{\hspace{5cm}}}
+  \vfill
+  {\LARGE \@ecourse}
+\end{center}
+\pagenumbering{roman}
+}
+
+% 目次環境再定義
+\renewcommand{\tableofcontents}{%
+\section*{\contentsname}
+\@starttoc{toc}
+\newpage
+}
+
+% 図目次環境再定義
+\renewcommand{\listoffigures}{%
+\section*{\listfigurename}
+\@starttoc{lof}
+\newpage
+}
+
+% 表目次環境再定義
+\renewcommand{\listoftables}{%
+\section*{\listtablename}
+\@starttoc{lot}
+\cleardoublepage
+}
+
+% 謝辞環境の作成
+\newenvironment{acknowledgment}{%
+\addcontentsline{toc}{chapter}{\acknowledgmentname}
+\chapter*{\acknowledgmentname}
+}{}
+
+% 参考文献環境の作成
+\newenvironment{bib}[1][100]{%
+\addcontentsline{toc}{chapter}{\bibname}
+}{}
+
+% subsubsection 環境の設定変更
+\setcounter{secnumdepth}{3}
+\renewcommand\thesubsubsection{(\arabic{subsubsection})}
+
+% 箇条書きの行間設定
+\renewenvironment{itemize}{%
+\begin{list}{\parbox{1zw}{$\bullet$}}{%
+\setlength{\itemsep}{0em}
+\setlength{\parsep}{0em}
+}}{%
+\end{list}
+}
+
+\makeatother

@@ -1,82 +1,109 @@
-修士論文・卒業論文用LaTeXテンプレート
-=====================================
+# 学位論文用テンプレート
 
-慶應義塾大学湘南藤沢キャンパス(SFC)の修士論文用のテンプレートです。オリジナルは
-[@kurokobo](http://twitter.com/kurokobo) による
-[卒業論文用テンプレート](http://wiki.kurokobo.com/index.php?LaTeX) ですが、
-以下のような改造を加えています。
+筑波大学の学位論文用のテンプレートです。  
+[SFC の修士論文に（たぶん）準拠した LaTeX テンプレート](https://github.com/ymrl/thesis-template)を参考にさせていただきました。変更点は以下の通りです。
 
-* SFCの修士論文フォーマットに準拠。  
-  [大学院ガイド](http://www.sfc.keio.ac.jp/students_mag/class/mag_guide/index.html) に基づいて、
-  表題紙やアブストラクトを調整してあります。
-* デザインの調整。  
-  バインダー綴じのための余白設定を両面印刷に対応させました。
-* BibTeXへの対応。  
-  オリジナルのテンプレートでは BibTeX を使えないので、対応させました。
-* UTF-8 化。  
-  そろそろ内部的にも UTF-8 を使用する UpTeX が主流になってきているみたいなので、
-  すべてのファイルが UTF-8 になっています。
-  TeXShopなどのソフトウェアを使用する場合には設定の変更が（たぶん）必要です。
-* Makefile の同梱。  
-  Mac OS X や Linux のような Unix 系の OS であれば `make` 
-  コマンドのみでコンパイルできるように Makefile を同梱しました。
-* .gitignore の同梱。  
-  git でファイル管理をしやすいように .gitignore を同梱しました。
+- ディレクトリでソースファイル・出力ファイル・画像ファイルを区別した。
 
-サンプル
--------
-2通りの生成例を用意しています。
+- .latexmkrc を追加。それに伴って Makefile も修正。
 
-* [sample_binder_twoside.pdf（バインダー用余白設定あり・両面印刷用）](http://ymrl.github.com/thesis-template/sample_binder_twoside.pdf)：配布している構成で`make`コマンドを実行した状態
-* [sample_nobinder_oneside.pdf（バインダー用余白設定なし・片面印刷用）](http://ymrl.github.com/thesis-template/sample_nobinder_oneside.pdf)
+- Dockerfile を同梱。
 
-使い方
------
-以下のコマンドを実行することで、 PDF を生成できます。
+## 使い方
 
-    % make
+---
 
-`make` コマンドが使用できない場合は、以下のようなコマンドを使用してください。
+### 手元に LaTeX をコンパイルできる環境がある場合
 
-    % platex -kanji=utf8 main
-    % pbibtex -kanji=utf8 main
-    % platex -kanji=utf8 main
-    % platex -kanji=utf8 main
-    % dvipdfmx -p a4 main
+こちらは簡単でプロジェクトディレクトリ(この README.md があるディレクトリ)で `make` するだけで OK です。
 
-なお、`\cite` コマンドを使用していない場合、 pbibtex コマンドでエラーが出ます。
-この場合は、 `make` コマンドも使用できなくなるので、 Makefile を以下のように修正してください。
+```zsh
+$ cd {project directory}
+$ make
+```
 
-    all:
-    	platex    -kanji=utf8 main
-    	# pbibtex   -kanji=utf8 main 
-    	# platex    -kanji=utf8 main 
-      # この2行をコメントアウトする
-    	platex    -kanji=utf8 main
-    	dvipdfmx  -p a4 main
+### 手元に LaTeX をコンパイルできる環境がない場合
 
-以下のコマンドで、生成されたすべてのファイルを削除します。
+LaTeX 環境を local に用意してもらってもいいですが、おすすめは Docker を使って環境構築してしまう方法です。  
+Docker 環境がある場合は
 
-    % make clean
+```zsh
+$ cd {project directory}
+$ docker build -t hoge/fuga .
+```
 
-GitHubで論文を管理するには
-----------------------
-GitHub上にmy-thesisのようなリポジトリーを作って、以下のようにコマンドを実行してください。
+で Docker イメージを作り、
 
-    git clone git://github.com/ymrl/thesis-template.git my-thesis
-    cd my-thesis
-    git remote set-url remote git@github.com:myname/thesis.git
-    git push origin master
+```zsh
+$ docker run --rm -v `pwd`:/workdir hoge/fuga make
+```
 
+でコンパイルできます。
 
-その他
------
-上記の方法でコンパイルすると生成される PDF ファイルを参照してください。
-また、 Blog にも随時情報を追加しておりますのでご覧ください。
-http://mkdir.g.hatena.ne.jp/ymrl/
+## VSCode で保存時にコンパイルしたい時
 
-ライセンス
----------
-オリジナルのテンプレートについては（おそらく） @kurokobo 
-に著作権があります。
-私が改造した部分についてはすべての権利を放棄いたします。
+拡張機能の[LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)をインストールしていることを前提とします。
+
+### Docker を使わない場合
+
+*settings.json*の中に
+
+```json
+"latex-workshop.latex.recipes": [
+    {
+      "name": "compile",
+      "tools": ["make"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "make",
+      "command": "make",
+      "args": [
+        "-C",
+        ".."
+      ]
+    }
+  ],
+  "latex-workshop.latex.autoBuild.run": "onFileChange",
+```
+
+を追加すれば OK です。
+
+### Docker を使う場合
+
+*settings.json*の中に
+
+```json
+"latex-workshop.latex.recipes": [
+    {
+      "name": "compile",
+      "tools": ["make"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "make",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-v",
+        "%DIR%/..:/workdir",
+        "hoge/fuga",
+        "make"
+      ]
+    }
+  ],
+  "latex-workshop.latex.autoBuild.run": "onFileChange",
+```
+
+を追加すれば OK です。
+
+## GitHub で論文を管理するには
+
+このレポジトリのトップページの[Use this template](https://github.com/JoyM1K1/thesis-template-tsukuba/generate) (← このリンクからでも飛べます) からテンプレートがそのまま使えます。あとは作ったレポジトリを clone してお好きに編集してください。
+
+## ライセンス
+
+私(@JoyM1K1)が改造した部分についてはすべての権利を放棄いたします。
