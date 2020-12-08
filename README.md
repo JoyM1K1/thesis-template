@@ -64,6 +64,7 @@ $ docker run --rm -v `pwd`:/workdir hoge/fuga make
     }
   ],
   "latex-workshop.latex.autoBuild.run": "onFileChange",
+  "latex-workshop.latex.outDir": "%DIR%/../out"
 ```
 
 を追加すれば OK です。
