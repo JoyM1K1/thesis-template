@@ -33,7 +33,7 @@ $ docker build -t hoge/fuga .
 で Docker イメージを作り、
 
 ```zsh
-$ docker run --rm -v `pwd`:/workdir hoge/fuga make
+$ docker run --rm -v `pwd`:`pwd` hoge/fuga make
 ```
 
 でコンパイルできます。
