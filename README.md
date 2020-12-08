@@ -87,7 +87,9 @@ $ docker run --rm -v `pwd`:/workdir hoge/fuga make
         "run",
         "--rm",
         "-v",
-        "%DIR%/..:/workdir",
+        "%DIR%/..:%DIR%/..",
+        "-w",
+        "%DIR%/..",
         "hoge/fuga",
         "make"
       ]
